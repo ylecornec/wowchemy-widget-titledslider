@@ -1,6 +1,51 @@
-{{ $page := .root }}
-{{ $section := .page }}
+{{ $ := .root }}
+{{ $page := .page }}
+<div class="row">
+		<div class="col-12 col-lg-4 section-heading">
+		  {{ with $page.Title }}<h1>{{ . | markdownify | emojify }}</h1>{{ end }}
+		  {{ with $page.Params.subtitle }}<p>{{ . | markdownify | emojify }}</p>{{ end }}
+		</div>
+		<div class="col-12 col-lg-8">
+		  {{ $last_index := sub (len $page.Params.item) 1 }}
+		  {{if (eq $last_index 0)}}
 
-<h2>{{$section.Title}}</h2>
+				<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+				  <iframe src="https://www.youtube.com/embed/{{ (index $page.Params.item 0).youtube_video_id}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+				</div>
+		  {{ else }}
 
-<p>{{$section.Content}}</p>
+		  <div class="csslider" >
+			{{ range $index, $item := $page.Params.item }}
+			{{ if (eq $index 0) }}
+			<input type="radio" name="slides" id="slides_{{$index}}" checked />
+			{{ else }}
+			<input type="radio" name="slides" id="slides_{{$index}}"/>
+			{{ end }}
+			{{ end }}
+			<ul>
+			  {{ range $index, $item := $page.Params.item }}
+			  <li>
+				<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+				  <iframe src="https://www.youtube.com/embed/{{$item.youtube_video_id}}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+				</div>
+			  </li>
+			  {{ end }}
+			</ul>
+			<div class="arrows">
+			  {{ range $index, $item := $page.Params.item }}
+			  <label for="slides_{{$index}}"></label>
+			  {{ end }}
+			  <label for="slides_0" class="goto-first"></label>
+			  <label for="slides_{{$last_index}}" class="goto-last"></label>
+			</div>
+			<div class="navigation">
+			  <div>
+				{{ range $index, $item := $page.Params.item }}
+				<label for="slides_{{$index}}"></label>
+				{{ end }}
+			  </div>
+			</div>
+		  </div>
+		  {{ end }}
+		</div>
+</div>
